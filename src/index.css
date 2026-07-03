@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', Roboto,
+      Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/*
+ * README GitHub-flavored Markdown 스타일.
+ * 버그 수정 이력 #2: prose 기본 pre code 텍스트가 밝은 회색이라
+ * 밝은 #f6f8fa 배경과 대비가 사라지는 문제 → 다크 그레이로 오버라이드.
+ */
+.prose-github {
+  --tw-prose-body: #1f2328;
+  --tw-prose-headings: #1f2328;
+  --tw-prose-links: #0969da;
+  --tw-prose-bold: #1f2328;
+  --tw-prose-code: #1f2328;
+  --tw-prose-pre-code: #1f2328;
+  --tw-prose-pre-bg: #f6f8fa;
+  --tw-prose-quotes: #656d76;
+  --tw-prose-quote-borders: #d0d7de;
+  --tw-prose-hr: #d0d7de;
+  --tw-prose-th-borders: #d0d7de;
+  --tw-prose-td-borders: #d0d7de;
+  max-width: none;
+}
+
+.prose-github pre {
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.prose-github pre code {
+  color: #1f2328;
+  background-color: transparent;
+  padding: 0;
+  font-weight: 400;
+}
+
+.prose-github code {
+  background-color: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  font-size: 85%;
+  font-weight: 400;
+}
+
+.prose-github code::before,
+.prose-github code::after {
+  content: '';
+}
+
+.prose-github img {
+  border-radius: 6px;
+  max-width: 100%;
+}
+
+.prose-github table {
+  display: block;
+  overflow-x: auto;
+}
+
+.prose-github a {
+  text-decoration: none;
+}
+
+.prose-github a:hover {
+  text-decoration: underline;
+}
+
+/* highlight.js GitHub 라이트 테마 (핵심 토큰만 인라인) */
+.hljs-comment,
+.hljs-quote {
+  color: #6a737d;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag {
+  color: #d73a49;
+}
+.hljs-string,
+.hljs-attr,
+.hljs-template-tag,
+.hljs-addition {
+  color: #032f62;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #005cc5;
+}
+.hljs-title,
+.hljs-section,
+.hljs-function .hljs-title {
+  color: #6f42c1;
+}
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet {
+  color: #e36209;
+}
+.hljs-deletion {
+  color: #b31d28;
+}
