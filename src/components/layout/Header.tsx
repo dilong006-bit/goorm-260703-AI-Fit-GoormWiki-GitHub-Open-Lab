@@ -1,9 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { BookOpen } from 'lucide-react'
 import { SearchBox } from '@/components/common/SearchBox'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
+import { useTranslation } from '@/i18n/useTranslation'
+import { cn } from '@/lib/utils'
 
 export function Header() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   /**
    * 버그 수정 #1: 검색어가 있을 때만 /search로 이동한다.
@@ -15,40 +20,56 @@ export function Header() {
     navigate(`/search?q=${encodeURIComponent(q)}`)
   }
 
+  const navItems = [
+    { to: '/', label: t('nav.home'), end: true },
+    { to: '/search', label: t('nav.search'), end: false },
+    { to: '/about', label: t('nav.about'), end: false },
+  ]
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center gap-4">
-        <Link to="/" className="flex shrink-0 items-center gap-2 font-bold">
-          <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <div className="container flex h-16 items-center gap-3">
+        <Link
+          to="/"
+          className="flex shrink-0 items-center gap-2 font-bold tracking-tight"
+        >
+          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm shadow-primary/30">
             <BookOpen className="size-4" />
           </span>
-          <span className="hidden sm:inline">AI-Fit GoormWiki</span>
+          <span className="hidden sm:inline">{t('brand.name')}</span>
         </Link>
 
-        <div className="hidden max-w-md flex-1 md:block">
-          <SearchBox onSubmit={goSearch} placeholder="프로젝트 검색…" />
+        <div className="mx-2 hidden max-w-sm flex-1 md:block">
+          <SearchBox
+            onSubmit={goSearch}
+            placeholder={t('searchBox.placeholderShort')}
+          />
         </div>
 
-        <nav className="ml-auto flex items-center gap-1 text-sm font-medium">
-          <Link
-            to="/"
-            className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            홈
-          </Link>
-          <Link
-            to="/search"
-            className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            검색
-          </Link>
-          <Link
-            to="/about"
-            className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            소개
-          </Link>
+        <nav className="ml-auto flex items-center gap-0.5 text-sm font-medium">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                cn(
+                  'rounded-lg px-3 py-2 transition-colors',
+                  isActive
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
+                )
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
+
+        <div className="flex items-center gap-1.5 pl-1">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   )

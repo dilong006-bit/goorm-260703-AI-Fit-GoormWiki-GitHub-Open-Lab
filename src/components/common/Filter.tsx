@@ -1,5 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { getLanguageColor } from '@/constants/languages'
+import { useTranslation } from '@/i18n/useTranslation'
+import type { TranslationKey } from '@/i18n/types'
 import { cn } from '@/lib/utils'
 import type { SortKey } from '@/utils/filterRepos'
 
@@ -11,10 +13,10 @@ interface FilterProps {
   onSortChange: (sort: SortKey) => void
 }
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: 'updated', label: '최근 업데이트' },
-  { key: 'stars', label: 'Star 많은순' },
-  { key: 'name', label: '이름순' },
+const SORT_OPTIONS: { key: SortKey; label: TranslationKey }[] = [
+  { key: 'updated', label: 'search.sort.updated' },
+  { key: 'stars', label: 'search.sort.stars' },
+  { key: 'name', label: 'search.sort.name' },
 ]
 
 export function Filter({
@@ -24,6 +26,8 @@ export function Filter({
   sort,
   onSortChange,
 }: FilterProps) {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-4">
       {languages.length > 0 && (
@@ -38,7 +42,7 @@ export function Filter({
                 : 'border-input hover:bg-accent',
             )}
           >
-            전체
+            {t('search.filter.all')}
           </button>
           {languages.map((lang) => {
             const active = activeLanguage === lang
@@ -66,7 +70,9 @@ export function Filter({
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-muted-foreground">정렬</span>
+        <span className="text-xs text-muted-foreground">
+          {t('search.sortLabel')}
+        </span>
         {SORT_OPTIONS.map((opt) => (
           <Badge
             key={opt.key}
@@ -74,7 +80,7 @@ export function Filter({
             className="cursor-pointer"
             onClick={() => onSortChange(opt.key)}
           >
-            {opt.label}
+            {t(opt.label)}
           </Badge>
         ))}
       </div>

@@ -5,11 +5,14 @@ import { RepositoryGrid } from '@/components/repository/RepositoryGrid'
 import { GridSkeleton } from '@/components/common/Loading'
 import { ErrorState } from '@/components/common/ErrorState'
 import { useRepositories } from '@/hooks/useRepositories'
+import { useTranslation } from '@/i18n/useTranslation'
+import type { TranslationKey } from '@/i18n/types'
 import { filterByCategory, sortRepos } from '@/utils/filterRepos'
 import { getCategoryBySlug } from '@/constants/categories'
 
 export function Category() {
   const { name = '' } = useParams()
+  const { t } = useTranslation()
   const { repositories, loading, error, reload } = useRepositories()
   const category = getCategoryBySlug(name)
 
@@ -19,9 +22,7 @@ export function Category() {
   )
 
   if (!category) {
-    return (
-      <ErrorState message={`'${name}' 카테고리를 찾을 수 없습니다.`} />
-    )
+    return <ErrorState message={t('category.notFound', { name })} />
   }
 
   const Icon = category.icon
@@ -32,17 +33,20 @@ export function Category() {
         to="/"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="size-4" /> 홈으로
+        <ArrowLeft className="size-4" /> {t('category.back')}
       </Link>
 
       <div className="flex items-center gap-3">
-        <span className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Icon className="size-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold">{category.label}</h1>
+          <h1 className="text-2xl font-bold">
+            {t(`category.${category.slug}.label` as TranslationKey)}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            {category.description} · {repos.length}개 프로젝트
+            {t(`category.${category.slug}.desc` as TranslationKey)} ·{' '}
+            {t('category.countSuffix', { count: repos.length })}
           </p>
         </div>
       </div>
@@ -52,10 +56,7 @@ export function Category() {
       ) : loading ? (
         <GridSkeleton />
       ) : (
-        <RepositoryGrid
-          repos={repos}
-          emptyMessage="이 카테고리에 해당하는 프로젝트가 아직 없습니다."
-        />
+        <RepositoryGrid repos={repos} emptyMessage={t('category.empty')} />
       )}
     </div>
   )

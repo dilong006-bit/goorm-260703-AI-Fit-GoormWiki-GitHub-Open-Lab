@@ -4,44 +4,138 @@
 
 @layer base {
   :root {
+    /* Light theme — modern indigo accent */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --card-foreground: 222 47% 11%;
+    --primary: 243 75% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 243 75% 96%;
+    --accent-foreground: 243 63% 42%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 243 75% 58%;
+    --radius: 0.75rem;
+
+    color-scheme: light;
+  }
+
+  .dark {
+    /* Dark theme — deep slate + brightened indigo */
+    --background: 224 71% 4%;
+    --foreground: 210 20% 96%;
+    --card: 222 47% 7%;
+    --card-foreground: 210 20% 96%;
+    --primary: 243 75% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 210 20% 96%;
+    --muted: 217 33% 13%;
+    --muted-foreground: 218 11% 65%;
+    --accent: 243 47% 20%;
+    --accent-foreground: 243 90% 88%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 243 75% 66%;
+
+    color-scheme: dark;
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', Roboto,
-      Helvetica, Arial, sans-serif;
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', 'Noto Sans KR', Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  /* 커스텀 스크롤바 (다크/라이트 대응) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 9999px;
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+@layer utilities {
+  /* 히어로 은은한 그라디언트 글로우 */
+  .bg-hero-glow {
+    background-image:
+      radial-gradient(
+        60% 60% at 50% 0%,
+        hsl(var(--primary) / 0.12) 0%,
+        transparent 70%
+      );
+  }
+
+  /* 그라디언트 텍스트 */
+  .text-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--foreground)),
+      hsl(var(--primary))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* 스켈레톤 shimmer */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.05),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
 }
 
 /*
  * README GitHub-flavored Markdown 스타일.
- * 버그 수정 이력 #2: prose 기본 pre code 텍스트가 밝은 회색이라
- * 밝은 #f6f8fa 배경과 대비가 사라지는 문제 → 다크 그레이로 오버라이드.
+ * 버그 수정 이력 #2 유지 + 다크 모드 대응.
  */
 .prose-github {
   --tw-prose-body: #1f2328;
@@ -59,10 +153,29 @@
   max-width: none;
 }
 
+.dark .prose-github {
+  --tw-prose-body: #e6edf3;
+  --tw-prose-headings: #e6edf3;
+  --tw-prose-links: #4493f8;
+  --tw-prose-bold: #e6edf3;
+  --tw-prose-code: #e6edf3;
+  --tw-prose-pre-code: #e6edf3;
+  --tw-prose-pre-bg: #161b22;
+  --tw-prose-quotes: #9198a1;
+  --tw-prose-quote-borders: #30363d;
+  --tw-prose-hr: #30363d;
+  --tw-prose-th-borders: #30363d;
+  --tw-prose-td-borders: #30363d;
+}
+
 .prose-github pre {
   background-color: #f6f8fa;
   border: 1px solid #d0d7de;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+.dark .prose-github pre {
+  background-color: #161b22;
+  border-color: #30363d;
 }
 
 .prose-github pre code {
@@ -70,6 +183,9 @@
   background-color: transparent;
   padding: 0;
   font-weight: 400;
+}
+.dark .prose-github pre code {
+  color: #e6edf3;
 }
 
 .prose-github code {
@@ -79,6 +195,9 @@
   font-size: 85%;
   font-weight: 400;
 }
+.dark .prose-github code {
+  background-color: rgba(110, 118, 129, 0.4);
+}
 
 .prose-github code::before,
 .prose-github code::after {
@@ -86,7 +205,7 @@
 }
 
 .prose-github img {
-  border-radius: 6px;
+  border-radius: 8px;
   max-width: 100%;
 }
 
@@ -98,12 +217,11 @@
 .prose-github a {
   text-decoration: none;
 }
-
 .prose-github a:hover {
   text-decoration: underline;
 }
 
-/* highlight.js GitHub 라이트 테마 (핵심 토큰만 인라인) */
+/* highlight.js — GitHub 라이트 테마 */
 .hljs-comment,
 .hljs-quote {
   color: #6a737d;
@@ -137,4 +255,40 @@
 }
 .hljs-deletion {
   color: #b31d28;
+}
+
+/* highlight.js — GitHub 다크 테마 오버라이드 */
+.dark .hljs-comment,
+.dark .hljs-quote {
+  color: #8b949e;
+}
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-doctag {
+  color: #ff7b72;
+}
+.dark .hljs-string,
+.dark .hljs-attr,
+.dark .hljs-template-tag,
+.dark .hljs-addition {
+  color: #a5d6ff;
+}
+.dark .hljs-number,
+.dark .hljs-literal,
+.dark .hljs-type,
+.dark .hljs-class .hljs-title {
+  color: #79c0ff;
+}
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-function .hljs-title {
+  color: #d2a8ff;
+}
+.dark .hljs-built_in,
+.dark .hljs-symbol,
+.dark .hljs-bullet {
+  color: #ffa657;
+}
+.dark .hljs-deletion {
+  color: #ffa198;
 }

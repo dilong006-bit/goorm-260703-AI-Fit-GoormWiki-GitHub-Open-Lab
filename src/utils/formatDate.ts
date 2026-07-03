@@ -1,32 +1,34 @@
-/** ISO 날짜 → "2024년 3월 15일" 형식. */
-export function formatDate(iso: string): string {
+/** ISO 날짜 → 로케일별 긴 날짜 형식. */
+export function formatDate(iso: string, locale = 'ko-KR'): string {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
-  return new Intl.DateTimeFormat('ko-KR', {
+  return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }).format(d)
 }
 
-/** ISO 날짜 → "3일 전" 상대 표기. */
-export function formatRelative(iso: string): string {
+/** ISO 날짜 → 로케일별 상대 표기 (Intl.RelativeTimeFormat). */
+export function formatRelative(iso: string, locale = 'ko-KR'): string {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
-  const diffMs = Date.now() - d.getTime()
-  const sec = Math.floor(diffMs / 1000)
-  const min = Math.floor(sec / 60)
-  const hour = Math.floor(min / 60)
-  const day = Math.floor(hour / 24)
-  const month = Math.floor(day / 30)
-  const year = Math.floor(day / 365)
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
+  const diffSec = Math.round((d.getTime() - Date.now()) / 1000)
+  const abs = Math.abs(diffSec)
 
-  if (year > 0) return `${year}년 전`
-  if (month > 0) return `${month}개월 전`
-  if (day > 0) return `${day}일 전`
-  if (hour > 0) return `${hour}시간 전`
-  if (min > 0) return `${min}분 전`
-  return '방금 전'
+  const min = 60
+  const hour = min * 60
+  const day = hour * 24
+  const month = day * 30
+  const year = day * 365
+
+  if (abs >= year) return rtf.format(Math.round(diffSec / year), 'year')
+  if (abs >= month) return rtf.format(Math.round(diffSec / month), 'month')
+  if (abs >= day) return rtf.format(Math.round(diffSec / day), 'day')
+  if (abs >= hour) return rtf.format(Math.round(diffSec / hour), 'hour')
+  if (abs >= min) return rtf.format(Math.round(diffSec / min), 'minute')
+  return rtf.format(diffSec, 'second')
 }
 
 /** 큰 숫자 축약: 1200 → 1.2k */

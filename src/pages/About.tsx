@@ -1,22 +1,28 @@
-import { Github, Layers, Search, Zap } from 'lucide-react'
+import { Github, Layers, Search, Zap, type LucideIcon } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { env } from '@/config/env'
+import { useTranslation } from '@/i18n/useTranslation'
+import type { TranslationKey } from '@/i18n/types'
 
-const FEATURES = [
+const FEATURES: {
+  icon: LucideIcon
+  title: TranslationKey
+  desc: TranslationKey
+}[] = [
   {
     icon: Search,
-    title: '스마트 검색 & 필터',
-    desc: '이름·설명·언어·토픽으로 프로젝트를 빠르게 찾고 카테고리별로 탐색합니다.',
+    title: 'about.feature.search.title',
+    desc: 'about.feature.search.desc',
   },
   {
     icon: Layers,
-    title: 'README Wiki 뷰',
-    desc: 'GFM 마크다운, 코드 하이라이트, 이미지 경로 변환을 지원하는 문서 렌더링.',
+    title: 'about.feature.readme.title',
+    desc: 'about.feature.readme.desc',
   },
   {
     icon: Zap,
-    title: '24시간 캐싱',
-    desc: 'localStorage 캐시로 GitHub API 요청을 최소화하고 빠르게 로드합니다.',
+    title: 'about.feature.cache.title',
+    desc: 'about.feature.cache.desc',
   },
 ]
 
@@ -34,31 +40,35 @@ const STACK = [
 ]
 
 export function About() {
+  const { t } = useTranslation()
+
   return (
     <div className="mx-auto max-w-3xl space-y-10">
       <section className="space-y-3 text-center">
-        <h1 className="text-3xl font-bold">AI-Fit GoormWiki 소개</h1>
-        <p className="text-muted-foreground">
-          GitHub Repository를 학습자 친화적인 Wiki 형태로 탐색하는 오픈 랩
-          프로젝트입니다. (Phase 1 MVP)
-        </p>
+        <h1 className="text-3xl font-bold">{t('about.title')}</h1>
+        <p className="text-muted-foreground">{t('about.subtitle')}</p>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
         {FEATURES.map((f) => {
           const Icon = f.icon
           return (
-            <Card key={f.title} className="space-y-2 p-5">
-              <Icon className="size-6 text-primary" />
-              <h3 className="font-semibold">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
+            <Card
+              key={f.title}
+              className="space-y-2 p-5 transition-colors hover:border-primary/40"
+            >
+              <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Icon className="size-5" />
+              </span>
+              <h3 className="font-semibold">{t(f.title)}</h3>
+              <p className="text-sm text-muted-foreground">{t(f.desc)}</p>
             </Card>
           )
         })}
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">기술 스택</h2>
+        <h2 className="text-xl font-semibold">{t('about.stackTitle')}</h2>
         <div className="flex flex-wrap gap-2">
           {STACK.map((tech) => (
             <span
@@ -72,19 +82,18 @@ export function About() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">데이터 출처</h2>
+        <h2 className="text-xl font-semibold">{t('about.sourceTitle')}</h2>
         <p className="text-sm text-muted-foreground">
-          모든 프로젝트 정보는 GitHub REST API를 통해{' '}
-          <a
-            href={`https://github.com/${env.githubUsername}`}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-          >
-            <Github className="size-4" />@{env.githubUsername}
-          </a>
-          {' '}계정에서 실시간으로 가져옵니다.
+          {t('about.sourceText', { user: `@${env.githubUsername}` })}
         </p>
+        <a
+          href={`https://github.com/${env.githubUsername}`}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+        >
+          <Github className="size-4" />@{env.githubUsername}
+        </a>
       </section>
     </div>
   )

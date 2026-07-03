@@ -9,10 +9,12 @@ import { ErrorState } from '@/components/common/ErrorState'
 import { useSearch } from '@/hooks/useSearch'
 import { extractLanguages, type SortKey } from '@/utils/filterRepos'
 import { useRepositories } from '@/hooks/useRepositories'
+import { useTranslation } from '@/i18n/useTranslation'
 
 const PAGE_SIZE = 12
 
 export function Search() {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const initialQuery = searchParams.get('q') ?? ''
   const initialSort = (searchParams.get('sort') as SortKey) || 'updated'
@@ -70,9 +72,9 @@ export function Search() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">프로젝트 검색</h1>
+        <h1 className="text-2xl font-bold">{t('search.title')}</h1>
         <p className="text-sm text-muted-foreground">
-          전체 {total}개 중 {results.length}개 표시
+          {t('search.resultInfo', { total, count: results.length })}
         </p>
       </div>
 
@@ -96,10 +98,7 @@ export function Search() {
         <GridSkeleton />
       ) : (
         <>
-          <RepositoryGrid
-            repos={paged}
-            emptyMessage="검색 결과가 없습니다. 다른 키워드를 시도해 보세요."
-          />
+          <RepositoryGrid repos={paged} emptyMessage={t('search.empty')} />
           <Pagination
             page={page}
             totalPages={totalPages}

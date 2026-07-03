@@ -4,11 +4,42 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#4f46e5" />
     <meta
       name="description"
       content="AI-Fit GoormWiki — GitHub Repository를 학습자 친화적인 Wiki로 탐색하세요"
     />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
     <title>AI-Fit GoormWiki · GitHub Open Lab</title>
+    <!--
+      FOUC 방지: React 로드 전에 저장된 테마(또는 OS 설정)를 <html>에 선반영한다.
+    -->
+    <script>
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('nextwiki:theme')
+          var isDark =
+            stored === 'dark' ||
+            ((stored === 'system' || !stored) &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (isDark) document.documentElement.classList.add('dark')
+
+          var lang = localStorage.getItem('nextwiki:lang')
+          if (!lang) {
+            lang = (navigator.language || 'en').toLowerCase().startsWith('ko')
+              ? 'ko'
+              : 'en'
+          }
+          document.documentElement.setAttribute('lang', lang)
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
 import { buttonVariants } from '@/components/ui/button'
+import { useTranslation } from '@/i18n/useTranslation'
 
 export function NotFound() {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-      <p className="text-5xl font-bold text-muted-foreground">404</p>
-      <p className="text-muted-foreground">페이지를 찾을 수 없습니다.</p>
+      <p className="text-6xl font-extrabold text-gradient">404</p>
+      <p className="text-muted-foreground">{t('notFound.message')}</p>
       <Link to="/" className={buttonVariants()}>
-        홈으로 돌아가기
+        {t('notFound.backHome')}
       </Link>
     </div>
   )

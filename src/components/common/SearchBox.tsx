@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useTranslation } from '@/i18n/useTranslation'
 import { cn } from '@/lib/utils'
 
 interface SearchBoxProps {
@@ -22,12 +23,13 @@ interface SearchBoxProps {
 
 export function SearchBox({
   defaultValue = '',
-  placeholder = '프로젝트 검색 (이름, 설명, 언어, 토픽)',
+  placeholder,
   onSearch,
   onSubmit,
   className,
   autoFocus,
 }: SearchBoxProps) {
+  const { t } = useTranslation()
   const [value, setValue] = useState(defaultValue)
   // 사용자가 실제로 타이핑했는지 추적하는 플래그 (마운트 시 false)
   const userTypedRef = useRef(false)
@@ -72,8 +74,8 @@ export function SearchBox({
       <Input
         value={value}
         onChange={handleChange}
-        placeholder={placeholder}
-        aria-label="프로젝트 검색"
+        placeholder={placeholder ?? t('searchBox.placeholder')}
+        aria-label={t('searchBox.aria')}
         autoFocus={autoFocus}
         className="pl-9 pr-9"
       />
@@ -81,7 +83,7 @@ export function SearchBox({
         <button
           type="button"
           onClick={handleClear}
-          aria-label="검색어 지우기"
+          aria-label={t('searchBox.clear')}
           className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
         >
           <X className="size-4" />

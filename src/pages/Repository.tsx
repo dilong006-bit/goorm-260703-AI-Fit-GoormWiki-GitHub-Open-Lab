@@ -14,18 +14,18 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MarkdownViewer } from '@/components/repository/MarkdownViewer'
+import { AIStudioPanel } from '@/components/repository/AIStudioPanel'
 import { Loading } from '@/components/common/Loading'
 import { ErrorState, EmptyState } from '@/components/common/ErrorState'
-import {
-  fetchReadme,
-  fetchRepository,
-} from '@/services/github/repository'
+import { fetchReadme, fetchRepository } from '@/services/github/repository'
 import { getLanguageColor } from '@/constants/languages'
 import { formatCount, formatDate } from '@/utils/formatDate'
+import { useTranslation } from '@/i18n/useTranslation'
 import type { ReadmeContent, Repository as Repo } from '@/types/repository'
 
 export function Repository() {
   const { name = '' } = useParams()
+  const { t, intlLocale } = useTranslation()
   const [repo, setRepo] = useState<Repo | null>(null)
   const [readme, setReadme] = useState<ReadmeContent | null>(null)
   const [loading, setLoading] = useState(true)
@@ -53,7 +53,7 @@ export function Repository() {
       })
       .catch((err: unknown) => {
         if (cancelled) return
-        setError(err instanceof Error ? err.message : '불러오지 못했습니다.')
+        setError(err instanceof Error ? err.message : t('repo.notFound'))
         setLoading(false)
         setReadmeLoading(false)
       })
@@ -61,11 +61,11 @@ export function Repository() {
     return () => {
       cancelled = true
     }
-  }, [name])
+  }, [name, t])
 
-  if (loading) return <Loading label="저장소를 불러오는 중…" />
+  if (loading) return <Loading label={t('repo.loading')} />
   if (error) return <ErrorState message={error} />
-  if (!repo) return <ErrorState message="저장소를 찾을 수 없습니다." />
+  if (!repo) return <ErrorState message={t('repo.notFound')} />
 
   return (
     <div className="space-y-6">
@@ -73,7 +73,7 @@ export function Repository() {
         to="/"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="size-4" /> 홈으로
+        <ArrowLeft className="size-4" /> {t('repo.back')}
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
@@ -88,30 +88,32 @@ export function Repository() {
             )}
             {repo.topics.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {repo.topics.map((t) => (
-                  <Badge key={t} variant="secondary" className="font-normal">
-                    {t}
+                {repo.topics.map((tp) => (
+                  <Badge key={tp} variant="secondary" className="font-normal">
+                    {tp}
                   </Badge>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="rounded-lg border">
-            <div className="flex items-center gap-2 border-b bg-muted/40 px-4 py-2 text-sm font-medium">
+          <div className="rounded-xl border">
+            <div className="flex items-center gap-2 border-b bg-muted/40 px-4 py-2.5 text-sm font-medium">
               <Github className="size-4" />
-              README
+              {t('repo.readme')}
             </div>
             <div className="overflow-x-auto p-6">
               {readmeLoading ? (
-                <Loading label="README 렌더링 중…" className="py-10" />
+                <Loading label={t('repo.readmeLoading')} className="py-10" />
               ) : readme ? (
                 <MarkdownViewer content={readme.markdown} />
               ) : (
-                <EmptyState message="이 저장소에는 README가 없습니다." />
+                <EmptyState message={t('repo.noReadme')} />
               )}
             </div>
           </div>
+
+          <AIStudioPanel repo={repo} readme={readme?.markdown ?? null} />
         </div>
 
         {/* 사이드바: 메타 + 링크 */}
@@ -121,7 +123,7 @@ export function Repository() {
               className="w-full"
               onClick={() => window.open(repo.htmlUrl, '_blank', 'noopener')}
             >
-              <Github className="size-4" /> GitHub에서 보기
+              <Github className="size-4" /> {t('repo.viewOnGithub')}
             </Button>
             {repo.homepage && (
               <Button
@@ -131,13 +133,13 @@ export function Repository() {
                   window.open(repo.homepage!, '_blank', 'noopener')
                 }
               >
-                <Globe className="size-4" /> Demo 열기
+                <Globe className="size-4" /> {t('repo.openDemo')}
                 <ExternalLink className="size-3.5" />
               </Button>
             )}
           </div>
 
-          <dl className="space-y-3 rounded-lg border p-4 text-sm">
+          <dl className="space-y-3 rounded-xl border p-4 text-sm">
             {repo.language && (
               <Meta
                 icon={
@@ -146,36 +148,36 @@ export function Repository() {
                     style={{ backgroundColor: getLanguageColor(repo.language) }}
                   />
                 }
-                label="언어"
+                label={t('repo.meta.language')}
                 value={repo.language}
               />
             )}
             <Meta
               icon={<Star className="size-4 text-muted-foreground" />}
-              label="Stars"
+              label={t('repo.meta.stars')}
               value={formatCount(repo.stars)}
             />
             <Meta
               icon={<GitFork className="size-4 text-muted-foreground" />}
-              label="Forks"
+              label={t('repo.meta.forks')}
               value={formatCount(repo.forks)}
             />
             <Meta
               icon={<Eye className="size-4 text-muted-foreground" />}
-              label="Watchers"
+              label={t('repo.meta.watchers')}
               value={formatCount(repo.watchers)}
             />
             {repo.license && (
               <Meta
                 icon={<Scale className="size-4 text-muted-foreground" />}
-                label="라이선스"
+                label={t('repo.meta.license')}
                 value={repo.license}
               />
             )}
             <Meta
               icon={<Calendar className="size-4 text-muted-foreground" />}
-              label="업데이트"
-              value={formatDate(repo.pushedAt)}
+              label={t('repo.meta.updated')}
+              value={formatDate(repo.pushedAt, intlLocale)}
             />
           </dl>
         </aside>
